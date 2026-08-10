@@ -21,8 +21,35 @@ export function CategoryForm() {
           required
           minLength={2}
           maxLength={60}
-          placeholder="e.g. Science"
+          placeholder="e.g. Waruziko"
           className="w-56 rounded border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-red-600"
+        />
+      </div>
+      <div>
+        <label htmlFor="locale" className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
+          Language
+        </label>
+        <select
+          id="locale"
+          name="locale"
+          defaultValue="RW"
+          className="rounded border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-red-600"
+        >
+          <option value="RW">Kinyarwanda</option>
+          <option value="EN">English</option>
+        </select>
+      </div>
+      <div>
+        <label htmlFor="key" className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
+          Cross-language key (optional)
+        </label>
+        <input
+          id="key"
+          name="key"
+          maxLength={60}
+          placeholder="e.g. politics"
+          title="Links this category to its equivalent in the other language, e.g. both Politiki and Politics using key 'politics'"
+          className="w-48 rounded border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-red-600"
         />
       </div>
       <button

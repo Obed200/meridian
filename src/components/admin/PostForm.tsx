@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import { savePost, type SavePostResult } from "@/lib/actions/posts";
 
 const MDEditor = dynamic(() => import("@uiw/react-md-editor"), { ssr: false });
 
-type Category = { id: string; name: string };
+type Category = { id: string; name: string; locale: "RW" | "EN" };
 
 export function PostForm({
   categories,
@@ -22,6 +22,7 @@ export function PostForm({
     excerpt: string;
     body: string;
     categoryId: string;
+    locale: "RW" | "EN";
     status: "DRAFT" | "PUBLISHED";
     featured: boolean;
     heroImage: string;
@@ -34,6 +35,12 @@ export function PostForm({
   );
   const [body, setBody] = useState(post?.body ?? "");
   const [preview, setPreview] = useState<string | null>(post?.heroImage ?? null);
+  const [locale, setLocale] = useState<"RW" | "EN">(post?.locale ?? "RW");
+
+  const visibleCategories = useMemo(
+    () => categories.filter((c) => c.locale === locale),
+    [categories, locale]
+  );
 
   useEffect(() => {
     if (state && "success" in state) {
@@ -46,6 +53,7 @@ export function PostForm({
     <form action={formAction} className="space-y-6">
       {post ? <input type="hidden" name="postId" value={post.id} /> : null}
       <input type="hidden" name="body" value={body} />
+      <input type="hidden" name="locale" value={locale} />
 
       {state && "error" in state ? (
         <p className="rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
@@ -100,6 +108,25 @@ export function PostForm({
 
         <div className="space-y-6">
           <div className="rounded-lg border border-neutral-200 bg-white p-4">
+            <label htmlFor="localeSelect" className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
+              Language
+            </label>
+            {post ? (
+              <p className="mb-4 w-full rounded border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-600">
+                {post.locale === "RW" ? "Kinyarwanda" : "English"} (fixed after creation)
+              </p>
+            ) : (
+              <select
+                id="localeSelect"
+                value={locale}
+                onChange={(e) => setLocale(e.target.value as "RW" | "EN")}
+                className="mb-4 w-full rounded border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-red-600"
+              >
+                <option value="RW">Kinyarwanda</option>
+                <option value="EN">English</option>
+              </select>
+            )}
+
             <label htmlFor="categoryId" className="mb-1 block text-xs font-medium uppercase tracking-wide text-neutral-500">
               Category
             </label>
@@ -113,7 +140,7 @@ export function PostForm({
               <option value="" disabled>
                 Select a category
               </option>
-              {categories.map((c) => (
+              {visibleCategories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
                 </option>

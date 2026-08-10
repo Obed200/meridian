@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ category: string; slug: string }>;
 }): Promise<Metadata> {
   const { category, slug } = await params;
-  const post = await getArticle("rw", category, slug);
+  const post = await getArticle("en", category, slug);
   if (!post) return {};
   return {
     title: post.title,
@@ -16,13 +16,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function ArticlePage({
+export default async function EnglishArticlePage({
   params,
 }: {
   params: Promise<{ category: string; slug: string }>;
 }) {
   const { category, slug } = await params;
-  const post = await getArticle("rw", category, slug);
+  const post = await getArticle("en", category, slug);
   if (!post) notFound();
-  return <ArticleContent locale="rw" post={post} />;
+  return <ArticleContent locale="en" post={post} />;
 }

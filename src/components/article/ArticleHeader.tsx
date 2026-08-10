@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { formatPublishedDate } from "@/lib/types";
+import { dictionaries, localeCategoryHref, type Locale } from "@/lib/i18n";
 
 export function ArticleHeader({
   title,
@@ -7,17 +8,21 @@ export function ArticleHeader({
   category,
   authorName,
   publishedAt,
+  locale,
 }: {
   title: string;
   excerpt: string;
   category: { slug: string; name: string };
   authorName: string;
   publishedAt: Date | null;
+  locale: Locale;
 }) {
+  const t = dictionaries[locale];
+
   return (
     <header className="mx-auto max-w-3xl px-4 pt-8 sm:px-6">
       <Link
-        href={`/${category.slug}`}
+        href={localeCategoryHref(locale, category.slug)}
         className="text-xs font-semibold uppercase tracking-wide text-red-600 hover:underline"
       >
         {category.name}
@@ -27,9 +32,9 @@ export function ArticleHeader({
       </h1>
       <p className="mt-4 text-lg leading-relaxed text-neutral-600">{excerpt}</p>
       <div className="mt-5 flex items-center gap-2 border-y border-neutral-200 py-3 text-sm text-neutral-500">
-        <span className="font-medium text-neutral-800">By {authorName}</span>
+        <span className="font-medium text-neutral-800">{t.byAuthor(authorName)}</span>
         <span aria-hidden>·</span>
-        <time>{formatPublishedDate(publishedAt)}</time>
+        <time>{formatPublishedDate(publishedAt, locale)}</time>
       </div>
     </header>
   );

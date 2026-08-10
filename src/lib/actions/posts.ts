@@ -13,6 +13,7 @@ const postSchema = z.object({
   excerpt: z.string().trim().min(10).max(280),
   body: z.string().trim().min(20),
   categoryId: z.string().min(1),
+  locale: z.enum(["RW", "EN"]),
   status: z.enum(["DRAFT", "PUBLISHED"]),
   featured: z.boolean(),
 });
@@ -53,19 +54,24 @@ export async function savePost(
     excerpt: formData.get("excerpt"),
     body: formData.get("body"),
     categoryId: formData.get("categoryId"),
+    locale: formData.get("locale") ?? existing?.locale,
     status: formData.get("status"),
     featured: formData.get("featured") === "on",
   });
 
   if (!parsed.success) {
-    return { error: "Please check the form: title, excerpt, body, and category are required." };
+    return { error: "Please check the form: title, excerpt, body, category, and language are required." };
   }
+
+  // A post's language is fixed at creation; edits keep the original locale
+  // regardless of what the (disabled) form field submits.
+  const locale = existing ? existing.locale : parsed.data.locale;
 
   const category = await prisma.category.findUnique({
     where: { id: parsed.data.categoryId },
   });
-  if (!category) {
-    return { error: "Please select a valid category." };
+  if (!category || category.locale !== locale) {
+    return { error: "Please select a category that matches the post's language." };
   }
 
   let heroImage = existing?.heroImage ?? "";
@@ -102,13 +108,14 @@ export async function savePost(
     });
     revalidatePath("/admin/posts");
     revalidatePath("/");
+    revalidatePath("/en");
     return { success: true, postId: existing.id };
   }
 
   const baseSlug = slugify(parsed.data.title);
   let slug = baseSlug;
   let suffix = 1;
-  while (await prisma.post.findUnique({ where: { slug } })) {
+  while (await prisma.post.findFirst({ where: { slug, locale } })) {
     suffix += 1;
     slug = `${baseSlug}-${suffix}`;
   }
@@ -117,6 +124,7 @@ export async function savePost(
     data: {
       title: parsed.data.title,
       slug,
+      locale,
       excerpt: parsed.data.excerpt,
       body: parsed.data.body,
       categoryId: parsed.data.categoryId,
@@ -131,6 +139,7 @@ export async function savePost(
 
   revalidatePath("/admin/posts");
   revalidatePath("/");
+  revalidatePath("/en");
   return { success: true, postId: created.id };
 }
 
@@ -148,6 +157,7 @@ export async function togglePublish(postId: string) {
 
   revalidatePath("/admin/posts");
   revalidatePath("/");
+  revalidatePath("/en");
 }
 
 export async function deletePost(postId: string) {
@@ -155,6 +165,7 @@ export async function deletePost(postId: string) {
   await prisma.post.delete({ where: { id: postId } });
   revalidatePath("/admin/posts");
   revalidatePath("/");
+  revalidatePath("/en");
 }
 
 export async function deletePostAndRedirect(postId: string) {

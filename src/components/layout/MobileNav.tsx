@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { localeCategoryHref, type Locale } from "@/lib/i18n";
 
 export function MobileNav({
   categories,
+  locale,
 }: {
   categories: Array<{ slug: string; name: string }>;
+  locale: Locale;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -30,7 +33,7 @@ export function MobileNav({
             {categories.map((c) => (
               <li key={c.slug}>
                 <Link
-                  href={`/${c.slug}`}
+                  href={localeCategoryHref(locale, c.slug)}
                   onClick={() => setOpen(false)}
                   className="block py-2.5 text-sm font-medium text-neutral-800"
                 >

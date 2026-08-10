@@ -16,6 +16,11 @@ enum PostStatus {
   PUBLISHED
 }
 
+enum Locale {
+  RW
+  EN
+}
+
 model User {
   id           String   @id @default(cuid())
   name         String
@@ -28,16 +33,22 @@ model User {
 }
 
 model Category {
-  id    String @id @default(cuid())
-  name  String @unique
-  slug  String @unique
-  posts Post[]
+  id     String   @id @default(cuid())
+  name   String
+  slug   String
+  locale Locale   @default(RW)
+  key    String?
+  posts  Post[]
+
+  @@unique([locale, name])
+  @@unique([locale, slug])
 }
 
 model Post {
   id           String     @id @default(cuid())
   title        String
-  slug         String     @unique
+  slug         String
+  locale       Locale     @default(RW)
   excerpt      String
   body         String
   heroImage    String
@@ -53,6 +64,7 @@ model Post {
   updatedAt    DateTime   @updatedAt
   views        PageView[]
 
+  @@unique([locale, slug])
   @@index([status, publishedAt])
   @@index([categoryId])
 }

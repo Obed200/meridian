@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { dictionaries, type Locale } from "@/lib/i18n";
 
 type Variant = "leaderboard" | "in-feed" | "sidebar" | "in-article";
 
@@ -16,11 +17,19 @@ const LABEL: Record<Variant, string> = {
   "in-article": "In-article",
 };
 
-export function AdSlot({ variant, className }: { variant: Variant; className?: string }) {
+export function AdSlot({
+  variant,
+  locale = "en",
+  className,
+}: {
+  variant: Variant;
+  locale?: Locale;
+  className?: string;
+}) {
   return (
     <div className={clsx("mx-auto flex flex-col items-center justify-center", SIZE[variant], className)}>
       <div className="flex h-full w-full flex-col items-center justify-center gap-1 border border-dashed border-neutral-300 bg-neutral-50 text-neutral-400">
-        <span className="text-[10px] font-semibold uppercase tracking-widest">Advertisement</span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest">{dictionaries[locale].advertisement}</span>
         <span className="text-[10px]">{LABEL[variant]}</span>
       </div>
     </div>

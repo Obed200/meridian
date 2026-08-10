@@ -7,16 +7,16 @@ export async function generateMetadata({
   params: Promise<{ category: string }>;
 }): Promise<Metadata> {
   const { category: slug } = await params;
-  const category = await getCategoryBySlug("rw", slug);
+  const category = await getCategoryBySlug("en", slug);
   if (!category) return {};
   return { title: category.name };
 }
 
-export default async function CategoryPage({
+export default async function EnglishCategoryPage({
   params,
 }: {
   params: Promise<{ category: string }>;
 }) {
   const { category: slug } = await params;
-  return <CategoryContent locale="rw" categorySlug={slug} />;
+  return <CategoryContent locale="en" categorySlug={slug} />;
 }

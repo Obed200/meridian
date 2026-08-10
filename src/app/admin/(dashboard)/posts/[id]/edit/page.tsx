@@ -13,7 +13,7 @@ export default async function EditPostPage({
 
   const [post, categories] = await Promise.all([
     prisma.post.findUnique({ where: { id } }),
-    prisma.category.findMany({ orderBy: { name: "asc" } }),
+    prisma.category.findMany({ orderBy: [{ locale: "asc" }, { name: "asc" }] }),
   ]);
 
   if (!post) notFound();
@@ -32,6 +32,7 @@ export default async function EditPostPage({
           excerpt: post.excerpt,
           body: post.body,
           categoryId: post.categoryId,
+          locale: post.locale,
           status: post.status,
           featured: post.featured,
           heroImage: post.heroImage,

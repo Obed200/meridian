@@ -39,6 +39,7 @@ export default async function PostsListPage() {
           <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               <th className="px-4 py-3">Title</th>
+              <th className="px-4 py-3">Language</th>
               <th className="px-4 py-3">Category</th>
               {isAdmin ? <th className="px-4 py-3">Author</th> : null}
               <th className="px-4 py-3">Status</th>
@@ -58,6 +59,11 @@ export default async function PostsListPage() {
                       Featured
                     </span>
                   ) : null}
+                </td>
+                <td className="px-4 py-3">
+                  <span className="rounded bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600">
+                    {p.locale === "RW" ? "RW" : "EN"}
+                  </span>
                 </td>
                 <td className="px-4 py-3 text-neutral-500">{p.category.name}</td>
                 {isAdmin ? <td className="px-4 py-3 text-neutral-500">{p.author.name}</td> : null}
@@ -91,7 +97,7 @@ export default async function PostsListPage() {
             ))}
             {posts.length === 0 ? (
               <tr>
-                <td colSpan={isAdmin ? 6 : 5} className="px-4 py-8 text-center text-neutral-400">
+                <td colSpan={isAdmin ? 7 : 6} className="px-4 py-8 text-center text-neutral-400">
                   No posts yet.
                 </td>
               </tr>

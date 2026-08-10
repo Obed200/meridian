@@ -8,6 +8,13 @@ import { requireAdmin } from "@/lib/session";
 
 const categorySchema = z.object({
   name: z.string().trim().min(2).max(60),
+  locale: z.enum(["RW", "EN"]),
+  key: z
+    .string()
+    .trim()
+    .max(60)
+    .transform((v) => (v.length ? v.toLowerCase() : null))
+    .nullable(),
 });
 
 export type ActionResult = { error: string } | { success: true };
@@ -18,22 +25,28 @@ export async function createCategory(
 ): Promise<ActionResult> {
   await requireAdmin();
 
-  const parsed = categorySchema.safeParse({ name: formData.get("name") });
+  const parsed = categorySchema.safeParse({
+    name: formData.get("name"),
+    locale: formData.get("locale"),
+    key: formData.get("key") ?? "",
+  });
   if (!parsed.success) {
-    return { error: "Please provide a valid category name (2-60 characters)." };
+    return { error: "Please provide a valid category name (2-60 characters) and language." };
   }
 
-  const slug = slugify(parsed.data.name);
+  const { name, locale, key } = parsed.data;
+  const slug = slugify(name);
   const existing = await prisma.category.findFirst({
-    where: { OR: [{ name: parsed.data.name }, { slug }] },
+    where: { locale, OR: [{ name }, { slug }] },
   });
   if (existing) {
-    return { error: "A category with that name already exists." };
+    return { error: "A category with that name already exists in that language." };
   }
 
-  await prisma.category.create({ data: { name: parsed.data.name, slug } });
+  await prisma.category.create({ data: { name, slug, locale, key } });
   revalidatePath("/admin/categories");
   revalidatePath("/");
+  revalidatePath("/en");
   return { success: true };
 }
 
@@ -48,5 +61,6 @@ export async function deleteCategory(categoryId: string): Promise<ActionResult> 
   await prisma.category.delete({ where: { id: categoryId } });
   revalidatePath("/admin/categories");
   revalidatePath("/");
+  revalidatePath("/en");
   return { success: true };
 }

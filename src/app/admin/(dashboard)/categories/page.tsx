@@ -10,7 +10,7 @@ async function handleDelete(categoryId: string) {
 export default async function CategoriesPage() {
   const categories = await prisma.category.findMany({
     include: { _count: { select: { posts: true } } },
-    orderBy: { name: "asc" },
+    orderBy: [{ locale: "asc" }, { name: "asc" }],
   });
 
   return (
@@ -29,7 +29,9 @@ export default async function CategoriesPage() {
           <thead className="bg-neutral-50 text-xs uppercase tracking-wide text-neutral-500">
             <tr>
               <th className="px-4 py-3">Name</th>
+              <th className="px-4 py-3">Language</th>
               <th className="px-4 py-3">Slug</th>
+              <th className="px-4 py-3">Key</th>
               <th className="px-4 py-3">Posts</th>
               <th className="px-4 py-3" />
             </tr>
@@ -38,7 +40,13 @@ export default async function CategoriesPage() {
             {categories.map((c) => (
               <tr key={c.id}>
                 <td className="px-4 py-3 font-medium text-neutral-900">{c.name}</td>
-                <td className="px-4 py-3 text-neutral-500">/{c.slug}</td>
+                <td className="px-4 py-3">
+                  <span className="rounded bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600">
+                    {c.locale === "RW" ? "Kinyarwanda" : "English"}
+                  </span>
+                </td>
+                <td className="px-4 py-3 text-neutral-500">/{c.locale === "RW" ? "" : "en/"}{c.slug}</td>
+                <td className="px-4 py-3 text-neutral-400">{c.key ?? "—"}</td>
                 <td className="px-4 py-3 text-neutral-500">{c._count.posts}</td>
                 <td className="px-4 py-3 text-right">
                   <form action={handleDelete.bind(null, c.id)}>

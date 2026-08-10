@@ -2,19 +2,22 @@ import Link from "next/link";
 import clsx from "clsx";
 import { ResponsiveImage } from "@/components/media/ResponsiveImage";
 import { articleHref, formatPublishedDate, type CardPost } from "@/lib/types";
+import type { Locale } from "@/lib/i18n";
 
 type Variant = "featured" | "standard" | "compact" | "list";
 
 export function ArticleCard({
   post,
+  locale,
   variant = "standard",
   priority = false,
 }: {
   post: CardPost;
+  locale: Locale;
   variant?: Variant;
   priority?: boolean;
 }) {
-  const href = articleHref(post);
+  const href = articleHref(post, locale);
 
   if (variant === "list") {
     return (
@@ -75,7 +78,7 @@ export function ArticleCard({
           {post.title}
         </h2>
         <p className="mt-3 max-w-2xl text-base leading-relaxed text-neutral-600">{post.excerpt}</p>
-        <span className="mt-3 block text-xs text-neutral-400">{formatPublishedDate(post.publishedAt)}</span>
+        <span className="mt-3 block text-xs text-neutral-400">{formatPublishedDate(post.publishedAt, locale)}</span>
       </Link>
     );
   }

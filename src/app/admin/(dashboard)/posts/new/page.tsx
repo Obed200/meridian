@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { PostForm } from "@/components/admin/PostForm";
 
 export default async function NewPostPage() {
-  const categories = await prisma.category.findMany({ orderBy: { name: "asc" } });
+  const categories = await prisma.category.findMany({ orderBy: [{ locale: "asc" }, { name: "asc" }] });
 
   return (
     <div>

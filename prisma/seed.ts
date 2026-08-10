@@ -64,29 +64,50 @@ function hslToRgb(h: number, s: number, l: number) {
   };
 }
 
-const categoriesData = [
-  { name: "World", slug: "world" },
-  { name: "Politics", slug: "politics" },
-  { name: "Business", slug: "business" },
-  { name: "Technology", slug: "technology" },
-  { name: "Sports", slug: "sports" },
-  { name: "Opinion", slug: "opinion" },
-  { name: "Health", slug: "health" },
-  { name: "Culture", slug: "culture" },
+type Locale = "RW" | "EN";
+
+const categoriesData: Array<{ name: string; slug: string; locale: Locale; key: string | null }> = [
+  // English
+  { name: "World", slug: "world", locale: "EN", key: "world" },
+  { name: "Politics", slug: "politics", locale: "EN", key: "politics" },
+  { name: "Business", slug: "business", locale: "EN", key: "business" },
+  { name: "Technology", slug: "technology", locale: "EN", key: "technology" },
+  { name: "Sports", slug: "sports", locale: "EN", key: "sports" },
+  { name: "Opinion", slug: "opinion", locale: "EN", key: "opinion" },
+  { name: "Health", slug: "health", locale: "EN", key: "health" },
+  { name: "Culture", slug: "culture", locale: "EN", key: "culture" },
+  // Kinyarwanda
+  { name: "Politiki", slug: "politiki", locale: "RW", key: "politics" },
+  { name: "Ubuzima", slug: "ubuzima", locale: "RW", key: "health" },
+  { name: "Ubukungu", slug: "ubukungu", locale: "RW", key: "business" },
+  { name: "Imikino", slug: "imikino", locale: "RW", key: "sports" },
+  { name: "Imyidagaduro", slug: "imyidagaduro", locale: "RW", key: null },
+  { name: "Umuco", slug: "umuco", locale: "RW", key: "culture" },
+  { name: "Ikoranabuhanga", slug: "ikoranabuhanga", locale: "RW", key: "technology" },
+  { name: "Waruziko", slug: "waruziko", locale: "RW", key: null },
+  { name: "Diaspora", slug: "diaspora", locale: "RW", key: null },
+  { name: "Ibitekerezo", slug: "ibitekerezo", locale: "RW", key: "opinion" },
+  { name: "Isi Dutuye", slug: "isi-dutuye", locale: "RW", key: "world" },
 ];
 
-const postsData: Array<{
+type Author = "editor1" | "editor2" | "editor3" | "editor4";
+
+type PostSeed = {
   title: string;
   category: string;
+  locale: Locale;
   excerpt: string;
   body: string;
-  author: "editor1" | "editor2";
+  author: Author;
   featured?: boolean;
   daysAgo: number;
-}> = [
+};
+
+const englishPostsData: PostSeed[] = [
   {
     title: "Global Leaders Convene for Climate Summit Amid Rising Tensions",
     category: "world",
+    locale: "EN",
     excerpt:
       "Delegates from over 100 nations gathered this week to negotiate a new framework for emissions reduction, as scientists warn the window for action is narrowing.",
     author: "editor1",
@@ -105,6 +126,7 @@ The summit continues through the weekend, with a final plenary session expected 
   {
     title: "Earthquake Relief Efforts Accelerate in Coastal Region",
     category: "world",
+    locale: "EN",
     excerpt:
       "Aid convoys reached the hardest-hit villages this weekend, as international relief agencies scaled up operations following last week's magnitude 6.4 quake.",
     author: "editor2",
@@ -122,6 +144,7 @@ Officials estimate the full rebuilding effort could take up to two years, with e
   {
     title: "Lawmakers Reach Compromise on Infrastructure Bill",
     category: "politics",
+    locale: "EN",
     excerpt:
       "After months of gridlock, a bipartisan group has agreed on a package that funds transit, broadband, and grid modernization projects nationwide.",
     author: "editor1",
@@ -139,6 +162,7 @@ If passed, implementation would begin early next year, with states required to s
   {
     title: "Election Officials Roll Out New Voter Verification System",
     category: "politics",
+    locale: "EN",
     excerpt:
       "The updated system, piloted in three states this spring, aims to cut wait times while adding new layers of identity verification.",
     author: "editor2",
@@ -154,6 +178,7 @@ Officials from the participating states say a broader rollout is planned ahead o
   {
     title: "Tech Giant Reports Record Quarterly Earnings",
     category: "business",
+    locale: "EN",
     excerpt:
       "Strong cloud and advertising revenue pushed profits well past analyst expectations, sending shares higher in after-hours trading.",
     author: "editor1",
@@ -171,6 +196,7 @@ Looking ahead, leadership offered cautiously optimistic guidance for the coming 
   {
     title: "Central Bank Signals Pause in Interest Rate Hikes",
     category: "business",
+    locale: "EN",
     excerpt:
       "Policymakers held rates steady for the second consecutive meeting, citing cooling inflation data and a softening labor market.",
     author: "editor2",
@@ -188,6 +214,7 @@ The bank's next policy meeting is scheduled in roughly six weeks, by which point
   {
     title: "Startup Unveils Breakthrough in Battery Storage",
     category: "technology",
+    locale: "EN",
     excerpt:
       "The company claims its new solid-state design could double the range of electric vehicles while cutting charging times significantly.",
     author: "editor1",
@@ -205,6 +232,7 @@ The startup says it plans to begin pilot production within eighteen months, with
   {
     title: "Regulators Scrutinize AI Data Practices",
     category: "technology",
+    locale: "EN",
     excerpt:
       "A new inquiry will examine how leading AI companies source and use training data, amid growing concern over consent and copyright.",
     author: "editor2",
@@ -222,6 +250,7 @@ The inquiry is expected to take several months, with regulators saying they may 
   {
     title: "Underdog Squad Clinches Championship in Dramatic Finish",
     category: "sports",
+    locale: "EN",
     excerpt:
       "A last-minute comeback capped off a remarkable postseason run for a team that started the season near the bottom of the standings.",
     author: "editor1",
@@ -239,6 +268,7 @@ Players credited the team's resilience through a string of midseason injuries as
   {
     title: "City Breaks Ground on New Stadium Complex",
     category: "sports",
+    locale: "EN",
     excerpt:
       "Construction begins on a multi-use venue expected to host major sporting events and concerts starting in three years.",
     author: "editor2",
@@ -256,6 +286,7 @@ Construction crews expect the first phase, including the main structural framewo
   {
     title: "Why Local Journalism Still Matters",
     category: "opinion",
+    locale: "EN",
     excerpt:
       "As national headlines dominate feeds, the slow erosion of local newsrooms leaves communities without anyone watching city hall.",
     author: "editor1",
@@ -273,6 +304,7 @@ Rebuilding that capacity won't be easy, and it likely won't look like the newsro
   {
     title: "The Case for Rethinking Urban Transit",
     category: "opinion",
+    locale: "EN",
     excerpt:
       "Cities that invested early in frequent, reliable bus service are seeing ridership gains that light rail alone never delivered.",
     author: "editor2",
@@ -290,6 +322,7 @@ The cities getting this right aren't necessarily spending more. They're spending
   {
     title: "New Study Links Sleep Patterns to Long-Term Wellness",
     category: "health",
+    locale: "EN",
     excerpt:
       "Researchers tracking over 10,000 adults found consistent sleep timing mattered more for long-term health outcomes than total hours slept.",
     author: "editor1",
@@ -307,6 +340,7 @@ Researchers caution the study is observational and cannot fully establish cause 
   {
     title: "Museum Unveils Landmark Exhibition on Modern Art",
     category: "culture",
+    locale: "EN",
     excerpt:
       "The retrospective, five years in the making, brings together works rarely displayed outside private collections.",
     author: "editor2",
@@ -323,6 +357,316 @@ The exhibition is scheduled to run for four months before several pieces return 
   },
 ];
 
+const kinyarwandaPostsData: PostSeed[] = [
+  {
+    title: "Abadepite Bemeje Gahunda Nshya yo Kunoza Imihanda y'Icyaro",
+    category: "politiki",
+    locale: "RW",
+    excerpt:
+      "Umutwe w'Abadepite wemeje uyu munsi gahunda nshya izatuma imihanda y'icyaro inozwa mu myaka itatu iri imbere.",
+    author: "editor3",
+    daysAgo: 1,
+    body: `Umutwe w'Abadepite wemeje ku wa gatatu gahunda nshya igamije kunoza imihanda y'icyaro mu turere twinshi tw'igihugu, nyuma y'ibiganiro byamaze amezi make hagati y'amashyaka atandukanye.
+
+Gahunda ivuga ko mu myaka itatu iri imbere, hazubakwa cyangwa hanozwe ibirometero magana atandukanye by'imihanda, biteganyijwe ko bizatuma abaturage bo mu cyaro bagera vuba ku masoko no ku bitaro.
+
+Abadepite bamwe bavuze ko bishimira iyi ntambwe ariko bakomeza gusaba ko amafaranga azakoreshwa mu buryo bugaragara, mu gihe abandi bibajije uburyo gahunda izashyirwa mu bikorwa mu turere dukennye cyane.
+
+Minisiteri ifite imihanda mu nshingano zayo yavuze ko izatangira gukora igenzura ry'imihanda izasanwa mbere y'uko umwaka utaha utangira.`,
+  },
+  {
+    title: "Inama Nkuru y'Igihugu Yiga ku Ivugurura ry'Amategeko y'Ubutaka",
+    category: "politiki",
+    locale: "RW",
+    excerpt:
+      "Abadepite n'abakozi ba Guverinoma bahuriye mu nama yiga uburyo bwo kuvugurura amategeko agenga ubutaka.",
+    author: "editor4",
+    daysAgo: 5,
+    body: `Inama nkuru yateranye mu murwa mukuru iyobowe n'abayobozi bakuru b'igihugu, yiga ku ivugurura ry'amategeko agenga ubutaka, agamije gukemura impaka zimaze igihe kirekire hagati y'abaturage n'ibigo bishinzwe iyandikwa ry'ubutaka.
+
+Abagize inama bavuze ko ivugurura rigamije koroshya uburyo abaturage bandikisha ubutaka bwabo, no kugabanya ibibazo by'impaka z'imbibi zikunze kugera ku manza.
+
+Hazongerwaho kandi uburyo bw'ikoranabuhanga mu iyandikwa ry'ubutaka, kugira ngo raporo zigerweho vuba kandi zibashe kugenzurwa n'abaturage ubwabo binyuze kuri telefone zigendanwa.
+
+Umushinga w'itegeko utegerejwe kuzajya mu Nteko Ishinga Amategeko mu mezi ari imbere, nyuma y'uko haboneka ibitekerezo by'abanyagihugu binyuze mu nama zizakorwa mu turere.`,
+  },
+  {
+    title: "Ibitaro Byinshi Byahawe Ibikoresho Bishya byo Kuvura Abana",
+    category: "ubuzima",
+    locale: "RW",
+    excerpt:
+      "Minisiteri y'Ubuzima yatangaje ko ibitaro biri mu turere dutandukanye byahawe ibikoresho bishya bigamije kunoza ubuvuzi bw'abana bato.",
+    author: "editor3",
+    daysAgo: 2,
+    body: `Minisiteri y'Ubuzima yatangaje ko ibitaro birenga makumyabiri byahawe ibikoresho bishya bigenewe kuvura abana bato, harimo n'ibikoresho byo kuvura impinja zivutse zidashyitse.
+
+Abaganga bavuga ko ibi bikoresho bizatuma bagabanya umubare w'abarwayi bohererezwa mu bitaro binini bibarirwa kure, cyane cyane mu turere two mu cyaro aho ingendo z'ubuvuzi zikunze kutoroha.
+
+Uretse ibikoresho, Minisiteri ivuga ko yiyemeje gukomeza gutoza abaforomo n'ababyeyi ku buryo bwo kwita ku bana bato mu buryo bwizewe, bikagabanya impfu z'abana batageze ku myaka itanu.
+
+Ibi biba mu gihe igihugu gikomeje gushyira imbaraga mu bijyanye n'ubuzima bw'ababyeyi n'abana, nk'uko byemejwe mu ngamba za Guverinoma z'imyaka itanu iri imbere.`,
+  },
+  {
+    title: "Ubushakashatsi Bwerekana Akamaro k'Imirire Myiza mu Bwiza bw'Ubwonko",
+    category: "ubuzima",
+    locale: "RW",
+    excerpt:
+      "Impuguke mu by'imirire zivuga ko kurya ibiryo birimo intungamubiri bihagije bishobora gufasha abana gukura neza mu bwenge no mu mubiri.",
+    author: "editor4",
+    daysAgo: 6,
+    body: `Ubushakashatsi bushya bwakorewe mu bigo by'uburezi buto bwerekanye ko abana bafata ifunguro rirengeje intungamubiri bakunze kwigira neza kurusha abandi, harimo n'abagira ubushobozi buke bwo kwibuka.
+
+Impuguke zisaba ababyeyi gushyira imbaraga ku ndyo zuzuye, ari nako zibutsa ko ibihingwa nk'amashaza n'imboga bishobora gufasha mu iterambere ry'ubwonko bw'umwana uko akura.
+
+Muri iyi minsi, ibigo by'ubuzima biri kwiyongera mu turere byiyemeje gutanga inama ku babyeyi ku bijyanye n'imirire y'abana, cyane cyane mu myaka ibanza y'ubuzima bw'umwana.
+
+Impuguke zikomeje gushishikariza abaturage gukoresha ibihingwa byo mu gihugu, bavuga ko biroroshye kandi bifite agaciro kangana n'ibindi biryo bitumizwa hanze.`,
+  },
+  {
+    title: "Ishoramari mu Ikoranabuhanga Ryongera Akazi mu Mujyi wa Kigali",
+    category: "ubukungu",
+    locale: "RW",
+    excerpt:
+      "Ibigo bishya by'ikoranabuhanga byinjiye ku isoko byatangaje ko bizatanga akazi ku bantu babarirwa mu magana mu mwaka utaha.",
+    author: "editor3",
+    daysAgo: 1,
+    body: `Ibigo bibiri bishya byibanda ku ikoranabuhanga byatangaje gahunda zo gushora imari mu mujyi wa Kigali, bivugwa ko bizashyiraho akazi gashya ku bantu barenga magana atatu mu mwaka utaha.
+
+Abayobozi b'ibi bigo bavuze ko bahisemo Kigali kubera umutekano n'ibikorwa remezo byiza, ndetse n'ingamba za Guverinoma zishishikariza abashoramari mu bijyanye n'ikoranabuhanga.
+
+Impuguke mu bukungu zishimira iyi ntambwe, ariko zikomeza gusaba ko hakorwa ingamba zo gutoza urubyiruko ubumenyi buhagije bwo gukora muri ibi bigo, kugira ngo akazi katazajya gusa ku bantu baturutse hanze.
+
+Uretse guhanga akazi, ibi bigo byavuze ko byiteguye gufasha amashuri makuru mu mahugurwa afitanye isano n'ikoranabuhanga, mu rwego rwo kwiteza imbere urubyiruko rw'igihugu.`,
+  },
+  {
+    title: "Igiciro cy'Ibiribwa Kigenda Gishira ku Masoko y'Igihugu",
+    category: "ubukungu",
+    locale: "RW",
+    excerpt:
+      "Abacuruzi n'abaguzi bemeza ko ibiciro by'ibiribwa fatizo byatangiye kugenda bigabanuka nyuma y'isarura ryiza mu gihembwe gishize.",
+    author: "editor4",
+    daysAgo: 7,
+    body: `Ku masoko menshi yo mu gihugu, ibiciro by'ibiribwa fatizo nk'ibinyampeke n'imboga byatangiye kugabanuka, nyuma y'uko isarura ryagenze neza kubera imvura yagwye igihe.
+
+Abaguzi bavuga ko biborohereje kwishyura amafaranga make kugira ngo bagure ibyo bakenera, mu gihe abahinzi na bo bemeza ko basanze isoko rifite igiciro gikwiye ku byo basaruye.
+
+Nyamara, impuguke mu by'ubukungu zibutsa ko ibiciro bishobora kongera kuzamuka igihe cy'itumba, zisaba ko hashyirwaho uburyo bwo kubika neza umusaruro kugira ngo utangira gutakara.
+
+Minisiteri ishinzwe ubuhinzi yavuze ko ikorana n'amakoperative y'abahinzi kugira ngo hubakwe ubwiherero bw'ibigega mu turere dutandukanye, bizafasha kubika umusaruro mu gihe cy'ibura.`,
+  },
+  {
+    title: "Ikipe y'Igihugu Yitegura Amarushanwa Akomeye ku Mugabane",
+    category: "imikino",
+    locale: "RW",
+    excerpt:
+      "Abakinnyi b'ikipe y'igihugu bahagurukiye kwitoza mu bihe by'imvura, biteguye amarushanwa manini ateganyijwe mu mezi make aza.",
+    author: "editor3",
+    daysAgo: 2,
+    body: `Ikipe y'igihugu y'umupira w'amaguru yatangiye amahugurwa akomeye mu rwego rwo kwitegura amarushanwa manini ateganyijwe kuzabera ku mugabane wa Afurika mu mezi make aza.
+
+Umutoza mukuru yavuze ko itsinda rishya ryinjiwemo n'abakinnyi bakiri bato, bavuye mu masoko n'amashuri makuru, bavugwaho ubushobozi bwiza n'umuvuduko.
+
+Abaharanira umukino bemeza ko iki gihe ari cyo cyiza cyo kongera icyizere kuri iyi kipe, nyuma y'ibihe bike biheruka byagoye aho itsinda ryananiwe kwinjira mu marushanwa amwe akomeye.
+
+Amarushanwa ateganyijwe gutangira mu mpera z'umwaka, kandi abaharanira uyu mukino biteze kubona ikipe y'igihugu ikina mu maso y'abafana benshi baturutse mu gihugu no hanze yacyo.`,
+  },
+  {
+    title: "Urubyiruko Rwiga Imikino Itandukanye mu Ishuri ry'Impanuka",
+    category: "imikino",
+    locale: "RW",
+    excerpt:
+      "Ishuri rishya ryigisha imikino ryafunguwe mu murwa mukuru rigamije guteza imbere impano z'urubyiruko mu bijyanye n'imikino itandukanye.",
+    author: "editor4",
+    daysAgo: 8,
+    body: `Ishuri rishya ryigisha imikino ryafunguwe mu mujyi wa Kigali, rihuriza hamwe abana n'urubyiruko bafite impano mu mikino nk'umupira w'amaguru, umupira w'ikapa, n'imbaraga z'amaboko.
+
+Abarwanashyaka mu iterambere ry'umukino bavuga ko iri shuri rizafasha kumenya impano z'abana kuva bakiri bato, bikagabanya igihe cyo gushakisha abakinnyi b'ejo hazaza mu buryo butunganye.
+
+Ababyeyi bamwe bashimye iyi gahunda, bavuga ko itanga umwanya urubyiruko rwabo rwo gukoresha umwanya wabo neza mu gihe kitari mu ishuri, aho gukoresha igihe kinini kuri telefone.
+
+Ishuri rivuga ko rifite gahunda zo kuzamura ubushobozi bw'abatoza mu turere twose tw'igihugu, kugira ngo urubyiruko rwose rugire uburyo bumwe bwo kugera ku mahirwe.`,
+  },
+  {
+    title: "Ikoranabuhanga rya Terefone Rifasha Abahinzi Kumenya Ibiciro by'Isoko",
+    category: "ikoranabuhanga",
+    locale: "RW",
+    excerpt:
+      "Porogaramu nshya yo kuri telefone igendanwa ifasha abahinzi kumenya ibiciro by'ibihingwa ku masoko atandukanye mbere y'uko bagenda kubigurisha.",
+    author: "editor3",
+    daysAgo: 3,
+    body: `Ikigo cy'ikoranabuhanga cyashyize ahagaragara porogaramu nshya igenewe kuri telefone zigendanwa, izafasha abahinzi kumenya ibiciro by'ibihingwa byabo ku masoko atandukanye mbere y'uko bagenda kubigurisha.
+
+Iyi porogaramu ikoresha amakuru ava mu masoko menshi, bikagabanya uburyo abaguzi bamwe bakoresha kugura umusaruro w'abahinzi ku giciro gito, kubera ko abahinzi babuze aho babona amakuru.
+
+Abahinzi bagerageje iyi porogaramu bavuze ko yabafashije kubona amasoko meza kandi bakabona n'igihe nyacyo cyo kohereza umusaruro, bituma batakaza bike.
+
+Abashyize ahagaragara iyi porogaramu bavuze ko biteguye kuyongeramo ururimi rw'Ikinyarwanda mu buryo bworoshye, kugira ngo abahinzi batize gukoresha ibikoresho by'ikoranabuhanga babashe kuyikoresha.`,
+  },
+  {
+    title: "Amashuri Yinjiza Ikoranabuhanga mu Nyigisho z'Isomo rya Siyanse",
+    category: "ikoranabuhanga",
+    locale: "RW",
+    excerpt:
+      "Amashuri menshi yisumbuye atangiye gukoresha mudasobwa n'ibikoresho by'ikoranabuhanga mu kwigisha isomo rya siyansi n'imibare.",
+    author: "editor4",
+    daysAgo: 9,
+    body: `Amashuri yisumbuye menshi mu gihugu yatangiye kwinjiza ikoranabuhanga mu nyigisho z'isomo rya siyansi n'imibare, bikaba biteganyijwe ko bizafasha abanyeshuri gusobanukirwa neza ibyigwa bigoye.
+
+Abarimu bavuga ko gukoresha amashusho n'imyigire ikoresha mudasobwa bituma abanyeshuri bakurikirana amasomo neza kurusha uko byari bimeze mbere, cyane cyane mu byiciro biva mu bumenyi bwa fiziki na shimi.
+
+Minisiteri y'Uburezi yavuze ko iki gikorwa kizakomeza gutera imbere, hakazashyirwaho amasomo y'ikoranabuhanga mu mashuri menshi mu myaka itatu iri imbere.
+
+Nyamara, hakiri ibibazo by'amashanyarazi n'interineti idahagije mu duce twinshi two mu cyaro, ibintu abategura gahunda bavuga ko bakomeje kubikoraho ingamba.`,
+  },
+  {
+    title: "Umuganura Wizihijwe mu Rwego rwo Gushimira Umusaruro",
+    category: "umuco",
+    locale: "RW",
+    excerpt:
+      "Abaturage bo mu duce dutandukanye biyunze ku munsi w'umuganura, aho bishimiye umusaruro w'umwaka kandi bagasangira ibiryo by'igihugu.",
+    author: "editor3",
+    daysAgo: 4,
+    body: `Abaturage bo mu turere twinshi biyunze hamwe ku munsi w'umuganura, umuhango w'umuco gakondo ugaragaza gushimira umusaruro w'umwaka, aho batambutsa ibihingwa byabo mbere yo gutangira kubirya.
+
+Abakuru b'imiryango bavuze ko uyu muhango ari umwe mu iy'agaciro gakomeye mu muco Nyarwanda, kubera ko ubumbatira ubumwe hagati y'abaturage kandi ukibutsa urubyiruko akamaro k'ubuhinzi.
+
+Muri ibi biganiro, abari mu muhango birabiye kandi bemezanya ku bikorwa by'iterambere byakozwe mu mwaka ushize, aho bagirana ubushishozi ku bizakorwa mu myaka iri imbere.
+
+Ibirori byari birimo indirimbo n'imbyino gakondo, aho urubyiruko rwafashe uruhare runini mu kwerekana umuco nyarwanda ku bashyitsi baturutse mu duce dutandukanye tw'igihugu.`,
+  },
+  {
+    title: "Ikigo cy'Umuco Cyafunguye Insanganyamatsiko ku Buhanzi bw'Abakobwa",
+    category: "umuco",
+    locale: "RW",
+    excerpt:
+      "Insanganyamatsiko nshya yerekana ubuhanzi bw'abakobwa yafunguwe mu ikigo cy'umuco, igizwe n'amashusho, ibicapo n'ibikorwa by'ubuhanzi.",
+    author: "editor4",
+    daysAgo: 10,
+    body: `Ikigo cy'umuco cyafunguye insanganyamatsiko nshya igaragaza ubuhanzi bw'abakobwa bo mu bihe bitandukanye, ihuriza hamwe amashusho, ibicapo, n'ibikorwa by'ubuhanzi biva mu turere dutandukanye tw'igihugu.
+
+Abahanzi bagize uruhare muri iyi nsanganyamatsiko bavuze ko bishimiye kubona umwanya wo kwerekana ubuhanga bwabo, banavuga ko ibi bizafasha abandi bakobwa gukurikira inzira y'ubuhanzi nta bwoba.
+
+Insanganyamatsiko izamara amezi abiri, kandi abayishinze bavuze ko biteguye kuyimurira mu tundi turere tw'igihugu nyuma y'uko igaragajwe mu murwa mukuru.
+
+Abasuye iyi nsanganyamatsiko bavuze ko ari intambwe nziza mu kongera agaciro k'ubuhanzi bwo mu gihugu, cyane cyane mu gihe abenshi bakunze kwibanda gusa ku bihangano biva hanze.`,
+  },
+  {
+    title: "Umuziki Nyarwanda Utangiye Kumenyekana ku Isoko Mpuzamahanga",
+    category: "imyidagaduro",
+    locale: "RW",
+    excerpt:
+      "Abahanzi bo mu gihugu bavuga ko indirimbo zabo zitangiye kwakirwa neza ku masoko y'imyidagaduro yo hanze, biturutse ku ikoranabuhanga rya interineti.",
+    author: "editor3",
+    daysAgo: 3,
+    body: `Abahanzi benshi bo mu gihugu bavuga ko indirimbo zabo zitangiye kumenyekana no hanze y'igihugu, bishimira ko amaplatform y'umuziki ku interineti yabafashije kugera ku bumva batari babona mbere.
+
+Bamwe muri aba bahanzi bavuze ko batangiye guhabwa ubutumire bwo gukina mu birori byo hanze y'igihugu, ibyo bakomeje kubona nk'intambwe ikomeye mu mwuga wabo.
+
+Impuguke mu by'imyidagaduro zivuga ko iyi ntambwe ishobora gufasha n'urundi rubyiruko rufite impano, zibasaba gukomeza kwihangana no gushora imbaraga mu bicishije kuri interineti.
+
+Uretse umuziki, ibindi bice by'imyidagaduro nka filime na firime ngufi na byo bivugwa ko bigenda byiyongera, aho abakinnyi b'igihugu batangiye gukorana n'abakora filime bo mu bihugu duturanye.`,
+  },
+  {
+    title: "Waruziko: Amateka y'Umuganura n'Icyo Usobanuye Muri Iki Gihe",
+    category: "waruziko",
+    locale: "RW",
+    excerpt:
+      "Waruziko ko umunsi w'umuganura wagiraga insobanuro zitandukanye mu bihe bya kera kurusha uko usobanuwe muri iki gihe?",
+    author: "editor4",
+    daysAgo: 6,
+    body: `Waruziko ko mu bihe bya kera, umunsi w'umuganura wari umunsi ukomeye cyane mu buzima bw'igihugu, aho wari uhuza umuco n'ubuyobozi, mbere y'uko usigara ari umunsi wibanda cyane ku muco n'umuryango?
+
+Mu myaka ya vuba aha, uyu munsi wagumanye agaciro ko gushimira umusaruro, ariko insobanuro zawo zarahindutse gato uko ibihe byagiye bisimburana, kubera impinduka mu buzima bw'abaturage.
+
+Abashakashatsi mu by'amateka bavuga ko kwiga ku nkomoko y'imihango nk'iyi bifasha abakiri bato gusobanukirwa neza uburyo umuco wabo wagiye uhindagurika, aho gukomeza kuwufata nk'ikintu kitigeze kigira impinduka.
+
+Iki gice cya Waruziko kizagenda kigaragaza andi makuru ku mateka n'imico by'igihugu, agamije gufasha abasomyi kumenya byinshi ku nkomoko y'ibyo dukora buri munsi.`,
+  },
+  {
+    title: "Abanyarwanda bo mu Mahanga Bahurira mu Nama y'Ubufatanye",
+    category: "diaspora",
+    locale: "RW",
+    excerpt:
+      "Abanyarwanda batuye mu bihugu bitandukanye bahuriye mu nama igamije gushimangira umubano n'igihugu cyabo kandi bakungurana ibitekerezo ku ishoramari.",
+    author: "editor3",
+    daysAgo: 5,
+    body: `Abanyarwanda batuye mu bihugu byinshi bahuriye mu nama y'ubufatanye yateguwe n'imiryango y'Abanyarwanda bo mu mahanga, aho bunguranye ibitekerezo ku buryo bushobora gufasha igihugu cyabo mu iterambere.
+
+Muri iyi nama, abitabiriye bavuze ko bashishikajwe no gushora imari mu bikorwa bito n'ibinini byo mu gihugu, harimo ubuhinzi, ikoranabuhanga, n'ubukerarugendo.
+
+Abayobozi bahagarariye Guverinoma bavuze ko hazashyirwaho uburyo bworoshye bwo gufasha Abanyarwanda bo hanze mu bijyanye n'ishoramari, harimo no koroshya inzira z'impapuro zisabwa.
+
+Abahuye muri iyi nama bemeranyijwe ko bazakomeza guhuriramo buri mwaka, kugira ngo bagenzure aho ibyemezo byafashwe bigeze, banagire uruhare mu kuzana ubumenyi bwabonye mu mahanga.`,
+  },
+  {
+    title: "Igitekerezo: Uburezi bw'Ikinyarwanda Bugomba Gushimangirwa mu Mashuri",
+    category: "ibitekerezo",
+    locale: "RW",
+    excerpt:
+      "Kuvugana ururimi rw'ikinyarwanda mu ishuri bifite akamaro kanini ku kwiga kw'umwana, ariko ntibigomba gusimbura indimi z'amahanga.",
+    author: "editor4",
+    daysAgo: 4,
+    body: `Ikibazo cy'ururimi rukoreshwa mu myigire kirakomeje kuvugwaho impaka, ariko birashoboka gushyira ku ruhande abandi urwo ni uko umwana yiga neza iyo yigishijwe mu rurimi arumva neza kurusha izindi.
+
+Ababyeyi benshi bemeza ko umwana wiga mbere mu rurimi rw'ikinyarwanda, akaza kwiga izindi ndimi nyuma buhoro buhoro, agira ubushobozi bwo gusobanukirwa neza ibyigwa kurusha uwatangiye n'ururimi atazi neza.
+
+Ariko iki gitekerezo ntikivuze ko indimi z'amahanga zitagira akamaro; ahubwo bisaba uburyo bunoze bwo guhuza indimi zombi, aho ikinyarwanda kizakoreshwa nk'urufatiro mbere yo kwinjiza izindi ndimi mu buryo bugenda butera imbere.
+
+Iyi mvugo ntabwo ari ubwenge bushya, ariko ikibazo kigaragara ni uko gushyira mu bikorwa bikiri bike mu mashuri amwe, aho amasomo menshi akikigishwa mu ndimi abanyeshuri batumva neza kuva mu byiciro bito.`,
+  },
+  {
+    title: "Igitekerezo: Guteza Imbere Ubukerarugendo bw'Imbere mu Gihugu",
+    category: "ibitekerezo",
+    locale: "RW",
+    excerpt:
+      "Mbere yo gukurura abashyitsi baturutse hanze, twagombye gushishikariza Abanyarwanda ubwabo gusura ahantu heza h'igihugu cyabo.",
+    author: "editor3",
+    daysAgo: 9,
+    body: `Igihe kinini, ubukerarugendo bwibanda cyane ku bashyitsi baturutse mu bindi bihugu, mu gihe Abanyarwanda benshi batazi neza ubwiza bw'ahantu bakikije nk'ibiyaga, imisozi, cyangwa amashyamba.
+
+Kwishyiriraho ibiciro byoroheje ku baturage bo mu gihugu byatuma benshi bagenda basura izo mbuga, bagatanga n'ubuhamya bufasha abandi kuzabizamo umutima.
+
+Ubu bukerarugendo bw'imbere mu gihugu bufite kandi akamaro ku bukungu, kuko amafaranga aguzwa ku baturage agumana mu gihugu, bikanafasha ibigo bito byo mu turere gukomeza gukora.
+
+Byaba byiza ibigo bishinzwe ubukerarugendo bikoranye n'amashuri, kugira ngo abanyeshuri babone amahirwe yo gusura ahantu hakomeye mu gihugu cyabo mbere yo kurangiza amashuri, bikagira uruhare mu kubaka urukundo rw'igihugu.`,
+  },
+  {
+    title: "Abakuru b'Ibihugu bya Afurika y'Iburasirazuba Bateraniye ku Nama y'Ubufatanye",
+    category: "isi-dutuye",
+    locale: "RW",
+    excerpt:
+      "Abakuru b'ibihugu bigize umuryango w'Afurika y'Iburasirazuba bahuriye mu nama igamije guteza imbere ubucuruzi n'ubufatanye hagati y'ibihugu bahuriramo.",
+    author: "editor4",
+    featured: true,
+    daysAgo: 0,
+    body: `Abakuru b'ibihugu bigize umuryango w'Afurika y'Iburasirazuba bahuriye mu nama y'agaciro yiga ku buryo bwo koroshya ubucuruzi hagati y'ibihugu byabo, harimo no gukuraho imbogamizi zibangamira ubwikorezi ku mipaka.
+
+Muri iyi nama, abari bahagarariye ibihugu byemeranyijwe ku gushyiraho gahunda zizatuma ibicuruzwa byambukiranya imipaka byihuta, bavuga ko ibi bizafasha kongera ubukungu bw'akarere kose.
+
+Impuguke mu bukungu zishimira izi ngamba, ariko zibutsa ko gushyira mu bikorwa ibyemejwe bisaba imbaraga zihagije, kandi ko ibihugu bigomba gufatanya nyuma y'inama kugira ngo intego zigerweho.
+
+Iyi nama izwi nk'iy'ubufatanye ikaba yarahuje kandi abikorera ku giti cyabo n'abashoramari, bagiye bunguranaho ibitekerezo ku miradi izashobora kwifashishwa n'akarere kose mu myaka iri imbere.`,
+  },
+  {
+    title: "Ibihugu Byinshi Byiyemeje Kurwanya Imihindagurikire y'Ikirere Hamwe",
+    category: "isi-dutuye",
+    locale: "RW",
+    excerpt:
+      "Mu nama mpuzamahanga yateranye vuba, ibihugu byinshi byemeranyijwe gushyiraho ingamba rusange zo kugabanya ingaruka z'imihindagurikire y'ikirere.",
+    author: "editor3",
+    daysAgo: 8,
+    body: `Abahagarariye ibihugu byinshi bahuriye mu nama mpuzamahanga yiga ku ngaruka z'imihindagurikire y'ikirere, aho bemeranyijwe gushyiraho ingamba rusange zizafasha kugabanya ubushyuhe bukabije bugenda bwiyongera ku isi.
+
+Impuguke zavuze ko ibihugu bito, cyane cyane ibiri muri Afurika, ari byo bihura n'ingaruka nyinshi z'imihindagurikire y'ikirere, mu gihe atari byo byatangije ikibazo mu buryo bunini.
+
+Ku bw'ibyo, hasabwe ko ibihugu byateye imbere byungura ubufasha ibihugu bito mu bijyanye n'ikoranabuhanga rifasha guhangana n'ibiza nk'amapfa n'imyuzure ikunze kugaragara muri iki gihe.
+
+Inama yasojwe basezeranya kongera guhurira mu mwaka utaha, aho bazasuzuma aho ibyemejwe muri iyi nama bigeze, kandi bakemeza andi mahame mashya niba bikenewe.`,
+  },
+];
+
+const postsData: PostSeed[] = [...englishPostsData, ...kinyarwandaPostsData];
+
 async function main() {
   await fs.mkdir(UPLOAD_DIR, { recursive: true });
 
@@ -334,11 +678,13 @@ async function main() {
   const categories = await Promise.all(
     categoriesData.map((c) => prisma.category.create({ data: c }))
   );
-  const categoryBySlug = new Map(categories.map((c) => [c.slug, c]));
+  const categoryByKey = new Map(categories.map((c) => [`${c.locale}:${c.slug}`, c]));
 
-  const [adminPasswordHash, editor1PasswordHash, editor2PasswordHash] =
+  const [adminPasswordHash, editor1PasswordHash, editor2PasswordHash, editor3PasswordHash, editor4PasswordHash] =
     await Promise.all([
       bcrypt.hash("Admin123!", 10),
+      bcrypt.hash("Editor123!", 10),
+      bcrypt.hash("Editor123!", 10),
       bcrypt.hash("Editor123!", 10),
       bcrypt.hash("Editor123!", 10),
     ]);
@@ -370,13 +716,31 @@ async function main() {
     },
   });
 
-  const authorsById = { editor1, editor2 };
+  const editor3 = await prisma.user.create({
+    data: {
+      name: "Uwase Diane",
+      email: "editor3@meridianpost.local",
+      passwordHash: editor3PasswordHash,
+      role: "EDITOR",
+    },
+  });
+
+  const editor4 = await prisma.user.create({
+    data: {
+      name: "Ndayisenga Eric",
+      email: "editor4@meridianpost.local",
+      passwordHash: editor4PasswordHash,
+      role: "EDITOR",
+    },
+  });
+
+  const authorsById = { editor1, editor2, editor3, editor4 };
   void admin;
 
   for (const post of postsData) {
     const slug = slugify(post.title);
-    const heroImage = await fetchHeroImage(slug);
-    const category = categoryBySlug.get(post.category)!;
+    const heroImage = await fetchHeroImage(`${post.locale.toLowerCase()}-${slug}`);
+    const category = categoryByKey.get(`${post.locale}:${post.category}`)!;
     const author = authorsById[post.author];
     const publishedAt = new Date();
     publishedAt.setDate(publishedAt.getDate() - post.daysAgo);
@@ -385,6 +749,7 @@ async function main() {
       data: {
         title: post.title,
         slug,
+        locale: post.locale,
         excerpt: post.excerpt,
         body: post.body,
         heroImage,
@@ -400,8 +765,10 @@ async function main() {
 
   console.log("Seed complete.");
   console.log("Admin login:  admin@meridianpost.local / Admin123!");
-  console.log("Editor login: editor1@meridianpost.local / Editor123!");
-  console.log("Editor login: editor2@meridianpost.local / Editor123!");
+  console.log("Editor login: editor1@meridianpost.local / Editor123! (EN desk)");
+  console.log("Editor login: editor2@meridianpost.local / Editor123! (EN desk)");
+  console.log("Editor login: editor3@meridianpost.local / Editor123! (RW desk)");
+  console.log("Editor login: editor4@meridianpost.local / Editor123! (RW desk)");
 }
 
 main()
