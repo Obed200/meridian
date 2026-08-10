@@ -97,3 +97,49 @@ export async function getViewsByCategory({ authorId }: Scope = {}) {
     .filter((c) => c.views > 0)
     .sort((a, b) => b.views - a.views);
 }
+
+export async function getViewsByLocale({ authorId }: Scope = {}) {
+  const posts = await prisma.post.findMany({
+    where: authorId ? { authorId } : {},
+    select: { locale: true, _count: { select: { views: true } } },
+  });
+
+  const totals = { RW: 0, EN: 0 };
+  for (const post of posts) {
+    totals[post.locale] += post._count.views;
+  }
+
+  return [
+    { locale: "Kinyarwanda", views: totals.RW },
+    { locale: "English", views: totals.EN },
+  ].filter((row) => row.views > 0);
+}
+
+export async function getAuthorLeaderboard(limit = 8) {
+  const editors = await prisma.user.findMany({
+    where: { role: "EDITOR" },
+    select: {
+      id: true,
+      name: true,
+      posts: {
+        select: { status: true, _count: { select: { views: true } } },
+      },
+    },
+  });
+
+  return editors
+    .map((editor) => {
+      const published = editor.posts.filter((p) => p.status === "PUBLISHED").length;
+      const views = editor.posts.reduce((sum, p) => sum + p._count.views, 0);
+      return {
+        id: editor.id,
+        name: editor.name,
+        posts: editor.posts.length,
+        published,
+        views,
+        avgViews: published > 0 ? Math.round(views / published) : 0,
+      };
+    })
+    .sort((a, b) => b.views - a.views)
+    .slice(0, limit);
+}

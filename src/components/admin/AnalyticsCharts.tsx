@@ -124,6 +124,89 @@ export function TopPostsChart({
   );
 }
 
+export function ViewsByLocaleChart({
+  data,
+}: {
+  data: Array<{ locale: string; views: number }>;
+}) {
+  if (data.length === 0) {
+    return (
+      <ChartCard title="Views by language">
+        <p className="py-8 text-center text-sm text-neutral-400">No views recorded yet.</p>
+      </ChartCard>
+    );
+  }
+
+  return (
+    <ChartCard title="Views by language">
+      <ResponsiveContainer width="100%" height={160}>
+        <BarChart
+          data={data}
+          layout="vertical"
+          margin={{ top: 0, right: 16, bottom: 0, left: 0 }}
+        >
+          <CartesianGrid horizontal={false} stroke={GRIDLINE} />
+          <XAxis type="number" allowDecimals={false} tick={{ fill: INK_MUTED, fontSize: 12 }} axisLine={false} tickLine={false} />
+          <YAxis
+            type="category"
+            dataKey="locale"
+            width={90}
+            tick={{ fill: INK_SECONDARY, fontSize: 12 }}
+            axisLine={false}
+            tickLine={false}
+          />
+          <Tooltip
+            formatter={(value) => [value, "Views"]}
+            contentStyle={{ borderRadius: 6, borderColor: GRIDLINE, fontSize: 13 }}
+          />
+          <Bar dataKey="views" radius={[0, 4, 4, 0]} barSize={24}>
+            {data.map((entry, index) => (
+              <Cell key={entry.locale} fill={CATEGORICAL[index % CATEGORICAL.length]} />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </ChartCard>
+  );
+}
+
+export function AuthorLeaderboard({
+  data,
+}: {
+  data: Array<{ id: string; name: string; posts: number; published: number; views: number; avgViews: number }>;
+}) {
+  return (
+    <ChartCard title="Author leaderboard">
+      {data.length === 0 ? (
+        <p className="py-8 text-center text-sm text-neutral-400">No editors yet.</p>
+      ) : (
+        <table className="w-full text-left text-sm">
+          <thead className="text-xs uppercase tracking-wide text-neutral-500">
+            <tr>
+              <th className="py-2 pr-2">Author</th>
+              <th className="py-2 pr-2 text-right">Posts</th>
+              <th className="py-2 pr-2 text-right">Published</th>
+              <th className="py-2 pr-2 text-right">Views</th>
+              <th className="py-2 text-right">Avg / post</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-neutral-100">
+            {data.map((author) => (
+              <tr key={author.id}>
+                <td className="py-2 pr-2 font-medium text-neutral-900">{author.name}</td>
+                <td className="py-2 pr-2 text-right text-neutral-600">{author.posts}</td>
+                <td className="py-2 pr-2 text-right text-neutral-600">{author.published}</td>
+                <td className="py-2 pr-2 text-right text-neutral-600">{author.views.toLocaleString()}</td>
+                <td className="py-2 text-right text-neutral-600">{author.avgViews.toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </ChartCard>
+  );
+}
+
 export function ViewsByCategoryChart({
   data,
 }: {

@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { deleteUser } from "@/lib/actions/users";
@@ -10,6 +11,10 @@ async function handleDelete(userId: string) {
 
 export default async function UsersPage() {
   const session = await auth();
+  if (session?.user.role !== "ADMIN") {
+    redirect("/admin/dashboard");
+  }
+
   const users = await prisma.user.findMany({
     include: { _count: { select: { posts: true } } },
     orderBy: [{ role: "asc" }, { createdAt: "asc" }],

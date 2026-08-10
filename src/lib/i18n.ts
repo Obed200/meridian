@@ -30,7 +30,6 @@ export function localeArticleHref(locale: Locale, categorySlug: string, postSlug
 
 type Dictionary = {
   staffLogin: string;
-  switchLanguage: string;
   advertisement: string;
   moreIn: (category: string) => string;
   moreInHeading: (category: string) => string;
@@ -48,7 +47,6 @@ type Dictionary = {
 export const dictionaries: Record<Locale, Dictionary> = {
   rw: {
     staffLogin: "Kwinjira kw'abakozi",
-    switchLanguage: "English",
     advertisement: "Kwamamaza",
     moreIn: (category) => `Ibindi muri ${category} →`,
     moreInHeading: (category) => `Ibindi muri ${category}`,
@@ -65,7 +63,6 @@ export const dictionaries: Record<Locale, Dictionary> = {
   },
   en: {
     staffLogin: "Staff login",
-    switchLanguage: "Kinyarwanda",
     advertisement: "Advertisement",
     moreIn: (category) => `More in ${category} →`,
     moreInHeading: (category) => `More in ${category}`,

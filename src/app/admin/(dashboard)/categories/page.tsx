@@ -1,3 +1,5 @@
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { deleteCategory } from "@/lib/actions/categories";
 import { CategoryForm } from "@/components/admin/CategoryForm";
@@ -8,6 +10,11 @@ async function handleDelete(categoryId: string) {
 }
 
 export default async function CategoriesPage() {
+  const session = await auth();
+  if (session?.user.role !== "ADMIN") {
+    redirect("/admin/dashboard");
+  }
+
   const categories = await prisma.category.findMany({
     include: { _count: { select: { posts: true } } },
     orderBy: [{ locale: "asc" }, { name: "asc" }],

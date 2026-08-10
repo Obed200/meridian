@@ -1,13 +1,17 @@
 import { auth } from "@/auth";
 import {
+  getAuthorLeaderboard,
   getDashboardStats,
   getTopPosts,
   getViewsByCategory,
+  getViewsByLocale,
   getViewsOverTime,
 } from "@/lib/analytics";
 import {
+  AuthorLeaderboard,
   TopPostsChart,
   ViewsByCategoryChart,
+  ViewsByLocaleChart,
   ViewsOverTimeChart,
 } from "@/components/admin/AnalyticsCharts";
 
@@ -25,12 +29,16 @@ export default async function DashboardPage() {
   const isAdmin = session!.user.role === "ADMIN";
   const scope = isAdmin ? {} : { authorId: session!.user.id };
 
-  const [stats, topPosts, viewsOverTime, viewsByCategory] = await Promise.all([
+  const [stats, topPosts, viewsOverTime, viewsByCategory, viewsByLocale, leaderboard] = await Promise.all([
     getDashboardStats(scope),
     getTopPosts(6, scope),
     getViewsOverTime(14, scope),
     getViewsByCategory(scope),
+    getViewsByLocale(scope),
+    isAdmin ? getAuthorLeaderboard(8) : Promise.resolve([]),
   ]);
+
+  const avgViewsPerPost = stats.published > 0 ? Math.round(stats.totalViews / stats.published) : 0;
 
   return (
     <div>
@@ -43,8 +51,9 @@ export default async function DashboardPage() {
         </p>
       </div>
 
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-5">
         <StatTile label="Total views" value={stats.totalViews} />
+        <StatTile label="Avg. views / post" value={avgViewsPerPost} />
         <StatTile label="Total posts" value={stats.totalPosts} />
         <StatTile label="Published" value={stats.published} />
         <StatTile label="Drafts" value={stats.draft} />
@@ -54,11 +63,16 @@ export default async function DashboardPage() {
         <ViewsOverTimeChart data={viewsOverTime} />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <div className="mb-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
         <TopPostsChart
           data={topPosts.map((p) => ({ title: p.post.title, views: p.views }))}
         />
         <ViewsByCategoryChart data={viewsByCategory} />
+      </div>
+
+      <div className={isAdmin ? "grid grid-cols-1 gap-6 lg:grid-cols-2" : ""}>
+        <ViewsByLocaleChart data={viewsByLocale} />
+        {isAdmin ? <AuthorLeaderboard data={leaderboard} /> : null}
       </div>
     </div>
   );

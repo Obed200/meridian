@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MobileNav } from "@/components/layout/MobileNav";
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 import {
   dictionaries,
   localeCategoryHref,
@@ -39,9 +40,7 @@ export async function Masthead({
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-1.5 text-[11px] text-neutral-500 sm:px-6">
         <span>{today}</span>
         <div className="flex items-center gap-4">
-          <Link href={resolvedSwitchHref} className="font-semibold hover:text-neutral-800">
-            {t.switchLanguage}
-          </Link>
+          <LanguageSwitcher locale={locale} otherHref={resolvedSwitchHref} />
           <Link href="/admin/login" className="hover:text-neutral-800">
             {t.staffLogin}
           </Link>
